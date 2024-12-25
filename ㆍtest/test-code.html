@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<link rel="stylesheet" href="res/darkmode.css">\s+</head>
+<body>
+    
+# 백업 디렉토리 생성
+$backupDir = "backup"
+if (-not (Test-Path $backupDir)) { New-Item -ItemType Directory -Path $backupDir }
+
+# 백업 및 수정 작업
+Get-ChildItem -Filter *.html | ForEach-Object {
+
+    Copy-Item $_.FullName -Destination (Join-Path $backupDir $_.Name)
+    $content = Get-Content $_.FullName -Raw -Encoding utf8
+    $content = $content -replace '</head>', '<link rel="stylesheet" href="res/darkmode.css">\s+</head>'
+    
+
+    # 2.2. 수정된 내용 저장
+    Set-Content $_.FullName -Value $content -Encoding utf8
+}
+
+
+</body>
+</html>
+
